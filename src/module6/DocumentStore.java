@@ -40,6 +40,8 @@ public class DocumentStore {
         trained = false;
         priorB = false;
         nrOfDocuments = 0;
+        vocab = new ArrayList<>();
+        documents = new ArrayList<>();
     }
 
     public void addDocument(String document, String cls) {
