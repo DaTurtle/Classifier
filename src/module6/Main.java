@@ -43,21 +43,24 @@ public class Main {
         System.out.println("starting to train...");
 
         ArrayList<String[]> arr = classifier.getDocumentStore().getDocuments();
-        for (String[] st : arr) {
-            for(String s : st) {
-                System.out.print(s + " ");
-            }
-            System.out.println("");
-        }
         classifier.train("Female", "Male");
 
         System.out.println("done training.");
-        double[] test;
-        try {
-            test = classifier.estimate(Utils.readFile("blogs/F/F-test1.txt"));
-            System.out.println("values: " + test[0] + "  ,  " + test[1]);
-        } catch (IOException e) {
-            System.out.println("Cant find file blogs/F/F-test1.txt");
+        for (int i = 0; i < 51; i++) {
+            String test;
+            try {
+                test = classifier.estimate(Utils.readFile("blogs/F/F-test"+ i +".txt"));
+                System.out.println(test);
+            } catch (IOException e) {
+            }
+        }
+        for (int i = 0; i < 51; i++) {
+            String test;
+            try {
+                test = classifier.estimate(Utils.readFile("blogs/M/M-test"+ i +".txt"));
+                System.out.println(test);
+            } catch (IOException e) {
+            }
         }
         System.out.println("done");
     }

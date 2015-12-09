@@ -66,14 +66,14 @@ public class NaiveBayes {
             int loc = docs.getIndexOfToken(normal);
             if (loc >= 0) {
                 tokenLocations.add(loc);
-                System.out.println(normal + " : " + loc);
+//                System.out.println(normal + " : " + loc);
             }
         }
         Integer[] res = new Integer[tokenLocations.size()];
         return tokenLocations.toArray(res);
     }
 
-    public double[] estimate(String document) {
+    public String estimate(String document) {
         Integer[] tokenLocations = getTokenLocations(DocumentStore.normalizeString(document));
         double[] score = new double[classes.length];
         for (int i = 0; i < classes.length; i++) {
@@ -82,6 +82,15 @@ public class NaiveBayes {
                 score[i] += Math.log10(docs.getCondprob(token, i));
             }
         }
-        return score;
+
+        int max = 0;
+        for (int i = 1; i < score.length; i++) {
+            max = Math.max(max, i);
+        }
+        String res = "Output = " + classes[max] + "  Scores: ";
+        for (int i = 0; i < score.length; i++) {
+            res += classes[i] + " " + score[i] + ", ";
+        }
+        return res;
     }
 }
