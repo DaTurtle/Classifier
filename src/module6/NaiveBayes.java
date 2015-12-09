@@ -35,15 +35,14 @@ public class NaiveBayes {
             int docsInClass = docs.countDocsInClass(classes[i]);
             prior[i] = (double) docsInClass/ (double) n;
             System.out.println("prior: " + i+ " = " + docsInClass +" / " + n);
-                for (int k = 0; k < vocab.length; k++) {
-                    System.out.println("process: " +k +"/" + vocab.length);
-
-                    double sumOfTokensInVocab = 0;
-                    for (int j = 0; j < vocab.length; j++) {
-                        sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + 1;
-                    }
-                    condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + 1) / sumOfTokensInVocab;
-                }
+            double sumOfTokensInVocab = 0;
+            for (int j = 0; j < vocab.length; j++) {
+                sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + 1;
+            }
+            for (int k = 0; k < vocab.length; k++) {
+                System.out.println("process: " +k +"/" + vocab.length);
+                condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + 1) / sumOfTokensInVocab;
+            }
         }
 
         docs.setPrior(prior);
