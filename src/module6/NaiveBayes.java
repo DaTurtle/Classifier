@@ -85,7 +85,9 @@ public class NaiveBayes {
 
         int max = 0;
         for (int i = 1; i < score.length; i++) {
-            max = Math.max(max, i);
+            if (score[i] > score[max]) {
+                max = i;
+            }
         }
         String res = "Output = " + classes[max] + "  Scores: ";
         for (int i = 0; i < score.length; i++) {
