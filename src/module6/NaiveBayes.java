@@ -52,6 +52,7 @@ public class NaiveBayes {
             for (double dd : d) {
                 System.out.print(" " + dd);
             }
+            System.out.println();
         }
     }
 
@@ -65,6 +66,7 @@ public class NaiveBayes {
             int loc = docs.getIndexOfToken(normal);
             if (loc >= 0) {
                 tokenLocations.add(loc);
+                System.out.println(normal + " : " + loc);
             }
         }
         Integer[] res = new Integer[tokenLocations.size()];

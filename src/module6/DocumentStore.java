@@ -64,6 +64,10 @@ public class DocumentStore {
                     classMap.put(token, 1);
                 }
                 wordcountPerClass.replace(cls, classMap);
+            } else {
+                HashMap<String, Integer> classMap = new HashMap<>();
+                classMap.put(token, 1);
+                wordcountPerClass.put(cls, classMap);
             }
             if (!vocab.contains(token)) {
                 vocab.add(token);
