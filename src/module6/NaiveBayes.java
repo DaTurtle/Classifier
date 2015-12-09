@@ -69,7 +69,7 @@ public class NaiveBayes {
         double[] score = new double[classes.length];
         for (int i = 0; i < classes.length; i++) {
             score[i] = docs.getPrior(i); //TODO LOGBASE
-            for (int token : tokenLocations) { //TODO USE ALL TOKENS, not just first one.
+            for (int token : tokenLocations) {
                 score[i] += docs.getCondprob(token, i); // TODO LOGBASE
             }
         }
