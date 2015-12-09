@@ -65,6 +65,10 @@ public class DocumentStore {
         }
     }
 
+    public int getIndexOfToken(String token) {
+        return vocab.indexOf(token);
+    }
+
     public String[] getVocab() {
         String[] res = new String[vocab.size()];
         return vocab.toArray(res);
