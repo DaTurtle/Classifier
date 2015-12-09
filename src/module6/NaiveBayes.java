@@ -36,6 +36,7 @@ public class NaiveBayes {
             prior[i] = (double) docsInClass/ (double) n;
             System.out.println("prior: " + i+ " = " + docsInClass +" / " + n);
                 for (int k = 0; k < vocab.length; k++) {
+                    System.out.println("process: " +k +"/" + vocab.length);
 
                     double sumOfTokensInVocab = 0;
                     for (int j = 0; j < vocab.length; j++) {
