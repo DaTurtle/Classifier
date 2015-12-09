@@ -47,17 +47,17 @@ public class Main {
 
         System.out.println("done training.");
         for (int i = 0; i < 51; i++) {
-            String test;
+            String test = "F: ";
             try {
-                test = classifier.estimate(Utils.readFile("blogs/F/F-test"+ i +".txt"));
+                test += classifier.estimate(Utils.readFile("blogs/F/F-test"+ i +".txt"));
                 System.out.println(test);
             } catch (IOException e) {
             }
         }
         for (int i = 0; i < 51; i++) {
-            String test;
+            String test = "M: ";
             try {
-                test = classifier.estimate(Utils.readFile("blogs/M/M-test"+ i +".txt"));
+                test += classifier.estimate(Utils.readFile("blogs/M/M-test"+ i +".txt"));
                 System.out.println(test);
             } catch (IOException e) {
             }
