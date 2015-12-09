@@ -68,9 +68,9 @@ public class NaiveBayes {
         Integer[] tokenLocations = getTokenLocations(DocumentStore.normalizeString(document));
         double[] score = new double[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            score[i] = docs.getPrior(i); //TODO LOGBASE
+            score[i] = Math.log10(docs.getPrior(i));
             for (int token : tokenLocations) {
-                score[i] += docs.getCondprob(token, i); // TODO LOGBASE
+                score[i] += Math.log10(docs.getCondprob(token, i));
             }
         }
         return score;
