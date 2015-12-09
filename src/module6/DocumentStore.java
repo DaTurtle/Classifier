@@ -21,6 +21,8 @@ public class DocumentStore {
     //Lijst van Stringarrays waarvan de eerste string de classname is.
     private ArrayList<String[]> documents;
     private ArrayList<String> vocab;
+    private HashMap<String, HashMap<String, Integer>> wordcountPerClass;
+    private HashMap<String, Integer> docsPerClass;
 
     public static String[] normalizeString(String text) {
         return text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
@@ -41,12 +43,28 @@ public class DocumentStore {
         priorB = false;
         nrOfDocuments = 0;
         vocab = new ArrayList<>();
+        wordcountPerClass = new HashMap<>();
         documents = new ArrayList<>();
+        docsPerClass = new HashMap<>();
     }
 
     public void addDocument(String document, String cls) {
         String[] normalized = normalizeString(document);
+        if (docsPerClass.containsKey(cls)) {
+            docsPerClass.replace(cls, docsPerClass.get(cls) + 1);
+        } else {
+            docsPerClass.put(cls, 1);
+        }
         for (String token : normalized) {
+            if (wordcountPerClass.containsKey(cls)) {
+                HashMap classMap = wordcountPerClass.get(cls);
+                if (classMap.containsKey(token)) {
+                    classMap.replace(token, (Integer) classMap.get(token) + 1);
+                } else {
+                    classMap.put(token, 1);
+                }
+                wordcountPerClass.replace(cls, classMap);
+            }
             if (!vocab.contains(token)) {
                 vocab.add(token);
             }
@@ -81,27 +99,24 @@ public class DocumentStore {
     }
 
     public int countDocsInClass(String cls) {
-        int res = 0;
-        for (String[] doc : documents) {
-            if(doc[0].equals(cls)){
-                res++;
-            }
+        if (docsPerClass.containsKey(cls)) {
+            return docsPerClass.get(cls);
+        } else {
+            return 0;
         }
-        return res;
 }
 
     public int countTokensOfTermInClass(String token, String classValue) {
-        int res = 0;
-        for (String[] doc : documents) {
-            if (doc[0].equals(classValue)) {
-                for (int i = 1; i < doc.length; i++) { //SKIP CLASSNAME
-                    if (doc[i].equals(token)) {
-                        res++;
-                    }
-                }
+        if (wordcountPerClass.containsKey(classValue)) {
+            HashMap classMap = wordcountPerClass.get(classValue);
+            if(classMap.containsKey(token)){
+                return (Integer) classMap.get(token);
+            } else {
+                return 0;
             }
+        } else {
+            return 0;
         }
-        return res;
     }
 
     public double getPrior(int cls) {

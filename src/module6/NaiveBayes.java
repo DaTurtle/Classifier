@@ -19,7 +19,7 @@ public class NaiveBayes {
     }
 
 
-    public void train(String... classes) {
+    public void train(String... classes) { //TODO efficienter maken dan de aardappel die het nu is...
 
         this.classes = classes;
         //assert classes.length = docs.getnr();
@@ -31,6 +31,7 @@ public class NaiveBayes {
         int n = docs.getnr();
 
         for (int i = 0; i < classes.length; i++) {
+            System.out.println("Training class: " +  i);
             int docsInClass = docs.countDocsInClass(classes[i]);
             prior[i] = (double) docsInClass/ (double) n;
                 for (int k = 0; k < vocab.length; k++) {
