@@ -102,6 +102,7 @@ public class DocumentStore {
         if (docsPerClass.containsKey(cls)) {
             return docsPerClass.get(cls);
         } else {
+            System.out.println("no docs with given class found");
             return 0;
         }
 }
@@ -111,12 +112,9 @@ public class DocumentStore {
             HashMap classMap = wordcountPerClass.get(classValue);
             if(classMap.containsKey(token)){
                 return (Integer) classMap.get(token);
-            } else {
-                return 0;
             }
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     public double getPrior(int cls) {
