@@ -1,5 +1,6 @@
 package module6;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ public class DocumentStore {
     private ArrayList<String> vocab;
     private HashMap<String, HashMap<String, Integer>> wordcountPerClass;
     private HashMap<String, Integer> docsPerClass;
+    private String[] stopWords;
+
     public static String[] normalizeString(String text) {
         return text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
     }
@@ -45,17 +48,36 @@ public class DocumentStore {
         wordcountPerClass = new HashMap<>();
         documents = new ArrayList<>();
         docsPerClass = new HashMap<>();
+        try {
+            stopWords = normalizeString(Utils.readFile("stopwords.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    public String[] filter(String[] text) {
+        ArrayList<String> res = new ArrayList<>();
+        for (String s: text) {
+            for (String filt: stopWords) {
+                if(s.equals(filt)) {
+                    break;
+                }
+            }
+            res.add(s);
+        }
+        String[] ret = new String[res.size()];
+        return res.toArray(ret);
+    }
 
     public void addDocument(String document, String cls) {
         String[] normalized = normalizeString(document);
+        String[] filtered = filter(normalized);
         if (docsPerClass.containsKey(cls)) {
             docsPerClass.replace(cls, docsPerClass.get(cls) + 1);
         } else {
             docsPerClass.put(cls, 1);
         }
-        for (String token : normalized) {
+        for (String token : filtered) {
             if (wordcountPerClass.containsKey(cls)) {
                 HashMap classMap = wordcountPerClass.get(cls);
                 if (classMap.containsKey(token)) {
@@ -73,7 +95,7 @@ public class DocumentStore {
                 vocab.add(token);
             }
         }
-        documents.add(concat(new String[]{cls}, normalized));
+        documents.add(concat(new String[]{cls}, filtered));
         nrOfDocuments++;
     }
 
