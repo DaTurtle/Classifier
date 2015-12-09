@@ -46,22 +46,39 @@ public class Main {
         classifier.train("Female", "Male");
 
         System.out.println("done training.");
+        System.out.println("Start testing...");
+        int ftot = 0;
+        int mtot = 0;
+        int finc = 0;
+        int minc = 0;
+
         for (int i = 0; i < 51; i++) {
             String test = "F: ";
             try {
-                test += classifier.estimate(Utils.readFile("blogs/F/F-test"+ i +".txt"));
+                String res = classifier.estimate(Utils.readFile("blogs/F/F-test"+ i +".txt"));
+                test += res;
                 System.out.println(test);
+                ftot++;
+                if (res.startsWith("Output = M")) {
+                    finc++;
+                }
             } catch (IOException e) {
             }
         }
         for (int i = 0; i < 51; i++) {
             String test = "M: ";
             try {
-                test += classifier.estimate(Utils.readFile("blogs/M/M-test"+ i +".txt"));
+                String res = classifier.estimate(Utils.readFile("blogs/M/M-test"+ i +".txt"));
+                test += res;
                 System.out.println(test);
+                mtot++;
+                if (res.startsWith("Output = F")) {
+                    minc++;
+                }
             } catch (IOException e) {
             }
         }
-        System.out.println("done");
+        double accuracy = 100 * (ftot-finc + mtot-minc) / (ftot+mtot);
+        System.out.println("done testing, mistakes: M(" + minc + "/" + mtot + ")  F(" + finc + "/" + ftot + "),  Accuracy: " + accuracy );
     }
 }
