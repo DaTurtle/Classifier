@@ -37,7 +37,7 @@ public class NaiveBayes {
 
                     double sumOfTokensInVocab = 0;
                     for (int j = 0; j < vocab.length; j++) {
-                        sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i] + 1);
+                        sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + 1;
                     }
                     condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i])) / sumOfTokensInVocab;
                 }
