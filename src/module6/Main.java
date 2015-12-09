@@ -1,6 +1,7 @@
 package module6;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -41,6 +42,13 @@ public class Main {
         }
         System.out.println("starting to train...");
 
+        ArrayList<String[]> arr = classifier.getDocumentStore().getDocuments();
+        for (String[] st : arr) {
+            for(String s : st) {
+                System.out.print(s + " ");
+            }
+            System.out.println("");
+        }
         classifier.train("Female", "Male");
 
         System.out.println("done training.");

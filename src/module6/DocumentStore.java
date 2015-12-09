@@ -20,10 +20,10 @@ public class DocumentStore {
 
     //Lijst van Stringarrays waarvan de eerste string de classname is.
     private ArrayList<String[]> documents;
+
     private ArrayList<String> vocab;
     private HashMap<String, HashMap<String, Integer>> wordcountPerClass;
     private HashMap<String, Integer> docsPerClass;
-
     public static String[] normalizeString(String text) {
         return text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
     }
@@ -37,7 +37,6 @@ public class DocumentStore {
         return c;
     }
 
-
     public DocumentStore() {
         trained = false;
         priorB = false;
@@ -47,6 +46,7 @@ public class DocumentStore {
         documents = new ArrayList<>();
         docsPerClass = new HashMap<>();
     }
+
 
     public void addDocument(String document, String cls) {
         String[] normalized = normalizeString(document);
@@ -71,6 +71,10 @@ public class DocumentStore {
         }
         documents.add(concat(new String[]{cls}, normalized));
         nrOfDocuments++;
+    }
+
+    public ArrayList<String[]> getDocuments() {
+        return documents;
     }
 
     public void setPrior(double[] prior) {

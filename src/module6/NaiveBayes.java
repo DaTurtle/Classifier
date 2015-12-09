@@ -34,18 +34,25 @@ public class NaiveBayes {
             System.out.println("Training class: " +  i);
             int docsInClass = docs.countDocsInClass(classes[i]);
             prior[i] = (double) docsInClass/ (double) n;
+            System.out.println("prior: " + i+ " = " + docsInClass +" / " + n);
                 for (int k = 0; k < vocab.length; k++) {
 
                     double sumOfTokensInVocab = 0;
                     for (int j = 0; j < vocab.length; j++) {
                         sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + 1;
                     }
-                    condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i])) / sumOfTokensInVocab;
+                    condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + 1) / sumOfTokensInVocab;
                 }
         }
 
         docs.setPrior(prior);
         docs.setCondprob(condprob);
+        System.out.println("condprob:");
+        for (double[] d : condprob) {
+            for (double dd : d) {
+                System.out.print(" " + dd);
+            }
+        }
     }
 
     public DocumentStore getDocumentStore() {
