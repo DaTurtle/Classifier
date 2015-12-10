@@ -9,7 +9,7 @@ public class NaiveBayes {
 
     private DocumentStore docs;
     private String[] classes;
-    private static final double smoothing = 1;
+    private static final double SMOOTHING = 1;
 
     public NaiveBayes(DocumentStore ds) {
         docs = ds;
@@ -38,11 +38,11 @@ public class NaiveBayes {
             System.out.println("prior: " + i+ " = " + docsInClass +" / " + n);
             double sumOfTokensInVocab = 0;
             for (int j = 0; j < vocab.length; j++) {
-                sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + smoothing;
+                sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + 1;
             }
             for (int k = 0; k < vocab.length; k++) {
                 System.out.println("process: " +k +"/" + vocab.length);
-                condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + smoothing) / sumOfTokensInVocab;
+                condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + 1) / sumOfTokensInVocab;
             }
         }
 
@@ -65,10 +65,8 @@ public class NaiveBayes {
         ArrayList<Integer> tokenLocations = new ArrayList<>();
         for (String normal : normalised) {
             int loc = docs.getIndexOfToken(normal);
-            if (loc >= 0) {
-                tokenLocations.add(loc);
+            tokenLocations.add(loc);
 //                System.out.println(normal + " : " + loc);
-            }
         }
         Integer[] res = new Integer[tokenLocations.size()];
         return tokenLocations.toArray(res);
@@ -80,7 +78,12 @@ public class NaiveBayes {
         for (int i = 0; i < classes.length; i++) {
             score[i] = Math.log10(docs.getPrior(i));
             for (int token : tokenLocations) {
-                score[i] += Math.log10(docs.getCondprob(token, i));
+                if (token > 0) {
+                    score[i] += Math.log10(docs.getCondprob(token, i));
+                } else {
+                    double condProb = SMOOTHING / (docs.countTokensInClass(classes[i]) + SMOOTHING * docs.getVocab().length);
+                    score[i] += Math.log10(condProb);
+                }
             }
         }
 

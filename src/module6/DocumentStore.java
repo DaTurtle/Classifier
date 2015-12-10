@@ -137,12 +137,24 @@ public class DocumentStore {
         }
 }
 
-    public int countTokensOfTermInClass(String token, String classValue) {
-        if (wordcountPerClass.containsKey(classValue)) {
-            HashMap classMap = wordcountPerClass.get(classValue);
+    public int countTokensOfTermInClass(String token, String cls) {
+        if (wordcountPerClass.containsKey(cls)) {
+            HashMap classMap = wordcountPerClass.get(cls);
             if(classMap.containsKey(token)){
                 return (Integer) classMap.get(token);
             }
+        }
+        return 0;
+    }
+
+    public int countTokensInClass(String cls) {
+        if (wordcountPerClass.containsKey(cls)) {
+            HashMap classMap = wordcountPerClass.get(cls);
+            int count = 0;
+            for(Object key : classMap.keySet()) {
+                count += (int) classMap.get(key);
+            }
+            return count;
         }
         return 0;
     }
