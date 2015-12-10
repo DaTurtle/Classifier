@@ -25,7 +25,7 @@ public class DocumentStore {
     private ArrayList<String> vocab;
     private HashMap<String, HashMap<String, Integer>> wordcountPerClass;
     private HashMap<String, Integer> docsPerClass;
-    private String[] stopWords;
+    private static String[] stopWords;
 
     public static String[] normalizeString(String text) {
         return text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
@@ -55,7 +55,7 @@ public class DocumentStore {
         }
     }
 
-    public String[] filter(String[] text) {
+    public static String[] filter(String[] text) {
         ArrayList<String> res = new ArrayList<>();
         for (String s: text) {
             for (String filt: stopWords) {

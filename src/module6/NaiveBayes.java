@@ -73,7 +73,8 @@ public class NaiveBayes {
     }
 
     public String estimate(String document) {
-        Integer[] tokenLocations = getTokenLocations(DocumentStore.normalizeString(document));
+        String[] normalized = DocumentStore.normalizeString(document);
+        Integer[] tokenLocations = getTokenLocations(DocumentStore.filter(normalized));
         double[] score = new double[classes.length];
         for (int i = 0; i < classes.length; i++) {
             score[i] = Math.log10(docs.getPrior(i));
