@@ -9,6 +9,7 @@ public class NaiveBayes {
 
     private DocumentStore docs;
     private String[] classes;
+    private static final double smoothing = 1;
 
     public NaiveBayes(DocumentStore ds) {
         docs = ds;
@@ -37,11 +38,11 @@ public class NaiveBayes {
             System.out.println("prior: " + i+ " = " + docsInClass +" / " + n);
             double sumOfTokensInVocab = 0;
             for (int j = 0; j < vocab.length; j++) {
-                sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + 1;
+                sumOfTokensInVocab += docs.countTokensOfTermInClass(vocab[j], classes[i]) + smoothing;
             }
             for (int k = 0; k < vocab.length; k++) {
                 System.out.println("process: " +k +"/" + vocab.length);
-                condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + 1) / sumOfTokensInVocab;
+                condprob[k][i] = (double) (docs.countTokensOfTermInClass(vocab[k], classes[i]) + smoothing) / sumOfTokensInVocab;
             }
         }
 
