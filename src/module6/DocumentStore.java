@@ -24,6 +24,7 @@ public class DocumentStore {
 
     private ArrayList<String> vocab;
     private HashMap<String, HashMap<String, Integer>> wordcountPerClass;
+    private HashMap<String, Integer> wordcount;
     private HashMap<String, Integer> docsPerClass;
     private static String[] stopWords;
 
@@ -46,6 +47,7 @@ public class DocumentStore {
         nrOfDocuments = 0;
         vocab = new ArrayList<>();
         wordcountPerClass = new HashMap<>();
+        wordcount = new HashMap<>();
         documents = new ArrayList<>();
         docsPerClass = new HashMap<>();
         try {
@@ -82,6 +84,7 @@ public class DocumentStore {
             docsPerClass.put(cls, 1);
         }
         for (String token : filtered) {
+            addWordToCount(token);
             if (wordcountPerClass.containsKey(cls)) {
                 HashMap classMap = wordcountPerClass.get(cls);
                 if (classMap.containsKey(token)) {
@@ -101,6 +104,14 @@ public class DocumentStore {
         }
         documents.add(concat(new String[]{cls}, filtered));
         nrOfDocuments++;
+    }
+
+    private void addWordToCount(String word) {
+        if (wordcount.containsKey(word)) {
+            wordcount.replace(word, wordcount.get(word) + 1);
+        } else {
+            wordcount.put(word, 1);
+        }
     }
 
     public ArrayList<String[]> getDocuments() {
