@@ -32,6 +32,19 @@ public class DocumentStore {
         return text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
     }
 
+    public String[] removeRareWords(int minOcccurrence, String[] vocab) {
+        ArrayList<String> temp = new ArrayList<>();
+        for (String word : vocab) {
+            if (wordcount.containsKey(word)) {
+                if (wordcount.get(word) >= minOcccurrence) {
+                    temp.add(word);
+                }
+            }
+        }
+        String[] res = new String[temp.size()];
+        return temp.toArray(res);
+    }
+
     public static String[] concat(String[] a, String[] b) {
         int aLen = a.length;
         int bLen = b.length;

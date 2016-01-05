@@ -10,6 +10,7 @@ public class NaiveBayes {
     private DocumentStore docs;
     private String[] classes;
     private static final double SMOOTHING = 1;
+    private static final int minOccurrences = 25;
 
     public NaiveBayes(DocumentStore ds) {
         docs = ds;
@@ -74,7 +75,9 @@ public class NaiveBayes {
 
     public String estimate(String document) {
         String[] normalized = DocumentStore.normalizeString(document);
-        Integer[] tokenLocations = getTokenLocations(DocumentStore.filter(normalized));
+        String[] filtered = DocumentStore.filter(normalized);
+        String[] pruned = docs.removeRareWords(minOccurrences, filtered);
+        Integer[] tokenLocations = getTokenLocations(pruned);
         double[] score = new double[classes.length];
         for (int i = 0; i < classes.length; i++) {
             score[i] = Math.log10(docs.getPrior(i));
