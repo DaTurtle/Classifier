@@ -58,12 +58,16 @@ public class DocumentStore {
     public static String[] filter(String[] text) {
         ArrayList<String> res = new ArrayList<>();
         for (String s: text) {
+            boolean isStopW = false;
             for (String filt: stopWords) {
                 if(s.equals(filt)) {
+                    isStopW = true;
                     break;
                 }
             }
-            res.add(s);
+            if (!isStopW) {
+                res.add(s);
+            }
         }
         String[] ret = new String[res.size()];
         return res.toArray(ret);
