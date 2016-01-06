@@ -248,6 +248,9 @@ public class DocumentStore {
     }
 
     public double getCondprobsPercent(double weight) {
+        if (condprobs.size() <= 0) {
+            return 0;
+        }
         int amount = (int) (condprobs.size() * weight);
         return condprobs.get(amount);
     }
