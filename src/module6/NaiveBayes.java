@@ -37,9 +37,9 @@ public class NaiveBayes {
         this.amountOfCondProbsToUse = amountOfCondProbsToUse;
     }
 
-    public void train(String... classes) { //TODO efficienter maken dan de aardappel die het nu is...
+    public void train() { //TODO efficienter maken dan de aardappel die het nu is...
 
-        this.classes = classes;
+        this.classes = docs.getClasses();
         //assert classes.length = docs.getnr();
         String[] vocab = docs.getVocab();
 

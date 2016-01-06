@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by Jan-Willem on 9-12-2015.
@@ -249,5 +250,11 @@ public class DocumentStore {
     public double getCondprobsPercent(double weight) {
         int amount = (int) (condprobs.size() * weight);
         return condprobs.get(amount);
+    }
+
+    public String[] getClasses() {
+        Set<String> classes = docsPerClass.keySet();
+        String[] res = new String[classes.size()];
+        return classes.toArray(res);
     }
 }

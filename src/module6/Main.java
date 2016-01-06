@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-	    NaiveBayes classifier = new NaiveBayes(1.0, 20, 0.30);
+	    NaiveBayes classifier = new NaiveBayes(1.0, 15, 0.90);
         DocumentStore docs = classifier.getDocumentStore();
 
         /**
@@ -37,20 +37,39 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        for (int i = 1; i < 592; i++) {
-            try {
-               docs.addDocument(Utils.readFile("blogs/F/F-train"+i+".txt"), "Female");
-           } catch (IOException e) {
-                System.out.println("F-train" + i +".txt does not exist");
+//        for (int i = 1; i < 592; i++) {
+//            try {
+//               docs.addDocument(Utils.readFile("blogs/F/F-train"+i+".txt"), "Female");
+//           } catch (IOException e) {
+//                System.out.println("F-train" + i +".txt does not exist");
+//            }
+//        }
+//        for (int i = 1; i < 601; i++) {
+//            try {
+//                docs.addDocument(Utils.readFile("blogs/M/M-train"+i+".txt"), "Male");
+//            } catch (IOException e) {
+//                System.out.println("M-train" + i +".txt does not exist");
+//            }
+//        }
+
+        for (int i = 2; i < 566; i++) {
+            for (int j = 0; j < 6; j++) {
+                try {
+                    docs.addDocument(Utils.readFile("corpus-mails/corpus/part1/3-"+i+"msg"+j+".txt"), "Female");
+                } catch (IOException e) {
+                    System.out.println("err");
+                }
             }
         }
-        for (int i = 1; i < 601; i++) {
+        for (int i = 1; i < 142; i++) {
             try {
-                docs.addDocument(Utils.readFile("blogs/M/M-train"+i+".txt"), "Male");
+                docs.addDocument(Utils.readFile("corpus-mails/corpus/part1/spmsga"+i+".txt"), "Male");
             } catch (IOException e) {
-                System.out.println("M-train" + i +".txt does not exist");
+                System.out.println("err");
             }
         }
+
+
         System.out.println("starting to train...");
 
         ArrayList<String[]> arr = classifier.getDocumentStore().getDocuments();
@@ -63,23 +82,25 @@ public class Main {
         int finc = 0;
         int minc = 0;
 
-        for (int i = 0; i < 51; i++) {
+        for (int i = 1211; i < 1225; i++) {
             String test = "F: ";
-            try {
-                String res = classifier.estimate(Utils.readFile("blogs/F/F-test"+ i +".txt"));
-                test += res;
-                System.out.println(test);
-                ftot++;
-                if (res.startsWith("M")) {
-                    finc++;
+            for (int j = 0; j < 6; j++) {
+                try {
+                    String res = classifier.estimate(Utils.readFile("corpus-mails/corpus/part1/5-"+i+"msg"+j+".txt"));
+                    test += res;
+                    System.out.println(test);
+                    ftot++;
+                    if (res.startsWith("M")) {
+                        finc++;
+                    }
+                } catch (IOException e) {
                 }
-            } catch (IOException e) {
             }
         }
-        for (int i = 0; i < 51; i++) {
+        for (int i = 0; i < 30; i++) {
             String test = "M: ";
             try {
-                String res = classifier.estimate(Utils.readFile("blogs/M/M-test"+ i +".txt"));
+                String res = classifier.estimate(Utils.readFile("corpus-mails/corpus/part2/spmsga"+i+".txt"));
                 test += res;
                 System.out.println(test);
                 mtot++;
