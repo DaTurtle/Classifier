@@ -17,4 +17,8 @@ public class Utils {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, CHARSET);
     }
+
+    public static double log2(double d) {
+        return Math.log10(d)/ Math.log10(2);
+    }
 }

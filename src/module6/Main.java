@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-	    NaiveBayes classifier = new NaiveBayes();
+	    NaiveBayes classifier = new NaiveBayes(1.0, 20, 0.30);
         DocumentStore docs = classifier.getDocumentStore();
 
         //Training might work

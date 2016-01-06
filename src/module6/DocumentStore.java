@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
  * Created by Jan-Willem on 9-12-2015.
@@ -22,22 +21,47 @@ public class DocumentStore {
     //Lijst van Stringarrays waarvan de eerste string de classname is.
     private ArrayList<String[]> documents;
 
+    private ArrayList<Double> condprobs;
+
     private ArrayList<String> vocab;
+
     private HashMap<String, HashMap<String, Integer>> wordcountPerClass;
     private HashMap<String, Integer> wordcount;
-    private HashMap<String, Integer> docsPerClass;
-    private static String[] stopWords;
 
+    private HashMap<String, Integer> docsPerClass;
+
+    private HashMap<String, Integer> tokensPerClass;
+
+    private static String[] stopWords;
     public static String[] normalizeString(String text) {
         return text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
     }
-
     public String[] removeRareWords(int minOcccurrence, String[] vocab) {
         ArrayList<String> temp = new ArrayList<>();
         for (String word : vocab) {
             if (wordcount.containsKey(word)) {
                 if (wordcount.get(word) >= minOcccurrence) {
                     temp.add(word);
+                }
+            }
+        }
+        String[] res = new String[temp.size()];
+        return temp.toArray(res);
+    }
+
+
+    public String[] removeLessValuable(double value, String[] text) {
+        ArrayList<String> temp = new ArrayList<>();
+        int nrOfClasses = docsPerClass.keySet().size();
+        for (int i = 0; i < nrOfClasses; i++) {
+            for (int j = 0; j < text.length; j++) {
+                int k = vocab.indexOf(text[j]);
+                if (k >= 0) {
+                    if(condprob[k][i] >= 1/nrOfClasses + value || condprob[k][i] <= 1/nrOfClasses - value) {
+                        if (!temp.contains(vocab.get(k))) {
+                            temp.add(vocab.get(k));
+                        }
+                    }
                 }
             }
         }
@@ -63,6 +87,8 @@ public class DocumentStore {
         wordcount = new HashMap<>();
         documents = new ArrayList<>();
         docsPerClass = new HashMap<>();
+        condprobs = new ArrayList<>();
+        tokensPerClass = new HashMap<>();
         try {
             stopWords = normalizeString(Utils.readFile("stopwords.txt"));
         } catch (IOException e) {
@@ -114,11 +140,19 @@ public class DocumentStore {
             if (!vocab.contains(token)) {
                 vocab.add(token);
             }
+            incrementTokenClassCount(cls);
         }
         documents.add(concat(new String[]{cls}, filtered));
         nrOfDocuments++;
     }
 
+    private void incrementTokenClassCount(String cls) {
+        if(tokensPerClass.containsKey(cls)) {
+            tokensPerClass.replace(cls, tokensPerClass.get(cls) + 1);
+        } else {
+            tokensPerClass.put(cls, 1);
+        }
+    }
     private void addWordToCount(String word) {
         if (wordcount.containsKey(word)) {
             wordcount.replace(word, wordcount.get(word) + 1);
@@ -176,13 +210,8 @@ public class DocumentStore {
     }
 
     public int countTokensInClass(String cls) {
-        if (wordcountPerClass.containsKey(cls)) {
-            HashMap classMap = wordcountPerClass.get(cls);
-            int count = 0;
-            for(Object key : classMap.keySet()) {
-                count += (int) classMap.get(key);
-            }
-            return count;
+        if (tokensPerClass.containsKey(cls)) {
+            return tokensPerClass.get(cls);
         }
         return 0;
     }
@@ -201,5 +230,24 @@ public class DocumentStore {
         } else {
             return -1;
         }
+    }
+
+    public Integer getWordcount(String word) {
+        if (wordcount.containsKey(word)) {
+            return wordcount.get(word);
+        } else {
+            return -1;
+        }
+    }
+
+    public void setCondprobs(ArrayList<Double> condprobs) {
+        this.condprobs = condprobs;
+        Collections.sort(condprobs);
+        Collections.reverse(condprobs);
+    }
+
+    public double getCondprobsPercent(double weight) {
+        int amount = (int) (condprobs.size() * weight);
+        return condprobs.get(amount);
     }
 }
