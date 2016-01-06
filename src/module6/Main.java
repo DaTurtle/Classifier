@@ -20,6 +20,15 @@ public class Main {
          * 7: goto step 4
          */
 
+        /**TODO GUI
+        * Klasses maken
+        * Bestanden (of strings) importeren
+        * bestand naar DocumentStore knop (gegeven de klasse)
+        * bestand estimaten -> dit geeft feedback op een of andere manier
+        * en dan dit bestand ook naar de documentstore sturen met een menselijk gecorrigeerde klasse.
+        * Knoppen om de smoothing amountOfCondProbsToUse en  minOccurrences aan te passen is ook handig.
+        * */
+
         //Training might work
 //        docs.addDocument("This is for testing purposes", "test");
 //        docs.addDocument("This is also for testing purposes", "test");
