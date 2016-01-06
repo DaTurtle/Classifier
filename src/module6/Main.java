@@ -73,7 +73,7 @@ public class Main {
         System.out.println("starting to train...");
 
         ArrayList<String[]> arr = classifier.getDocumentStore().getDocuments();
-        classifier.train("Female", "Male");
+        classifier.train();
 
         System.out.println("done training.");
         System.out.println("Start testing...");
