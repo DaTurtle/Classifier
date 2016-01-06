@@ -9,6 +9,19 @@ public class NaiveBayes {
 
     private DocumentStore docs;
     private String[] classes;
+
+    public void setSmoothing(double smoothing) {
+        this.smoothing = smoothing;
+    }
+
+    public void setMinOccurrences(int minOccurrences) {
+        this.minOccurrences = minOccurrences;
+    }
+
+    public void setAmountOfCondProbsToUse(double amountOfCondProbsToUse) {
+        this.amountOfCondProbsToUse = amountOfCondProbsToUse;
+    }
+
     private double smoothing;
     private int minOccurrences;
     private double amountOfCondProbsToUse;
@@ -115,11 +128,11 @@ public class NaiveBayes {
                 max = i;
             }
         }
-        String res = "Output = " + classes[max] + "  Scores: ";
-        for (int i = 0; i < score.length; i++) {
-            res += classes[i] + " " + score[i] + ", ";
-        }
-        res += " " +docs.getPrior(0);
-        return res;
+//        String res = "Output = " + classes[max] + "  Scores: ";
+//        for (int i = 0; i < score.length; i++) {
+//            res += classes[i] + " " + score[i] + ", ";
+//        }
+//        res += " " +docs.getPrior(0);
+        return classes[max];
     }
 }

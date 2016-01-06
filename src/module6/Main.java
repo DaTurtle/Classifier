@@ -9,6 +9,17 @@ public class Main {
 	    NaiveBayes classifier = new NaiveBayes(1.0, 20, 0.30);
         DocumentStore docs = classifier.getDocumentStore();
 
+        /**
+         * STEPS TO CLASSIFFY:
+         * 1: Initialise naivebayes classifier
+         * 2: Initialise documentstore
+         * 3: add documents
+         * 4: train classifier (Change minOccurrences before this if you want it changed)
+         * 5: estimate document (Change smoothing and amountOfCondProbsToUse before this if you want them changed)
+         * 6: TODO: Add estimated document to store given the correct class (user corrected)
+         * 7: goto step 4
+         */
+
         //Training might work
 //        docs.addDocument("This is for testing purposes", "test");
 //        docs.addDocument("This is also for testing purposes", "test");
@@ -59,7 +70,7 @@ public class Main {
                 test += res;
                 System.out.println(test);
                 ftot++;
-                if (res.startsWith("Output = M")) {
+                if (res.startsWith("M")) {
                     finc++;
                 }
             } catch (IOException e) {
@@ -72,7 +83,7 @@ public class Main {
                 test += res;
                 System.out.println(test);
                 mtot++;
-                if (res.startsWith("Output = F")) {
+                if (res.startsWith("F")) {
                     minc++;
                 }
             } catch (IOException e) {
