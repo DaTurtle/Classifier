@@ -14,19 +14,20 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
 public class GUI {
 
-	/**TODO GUI
-     * bestand naar DocumentStore knop (gegeven de klasse)
-     * bestand estimaten -> dit geeft feedback op een of andere manier
-     * en dan dit bestand ook naar de documentstore sturen met een menselijk gecorrigeerde klasse.
-     * Knoppen om de smoothing amountOfCondProbsToUse en  minOccurrences aan te passen is ook handig.
-     * Estimate knop heeft geen functionaliteit
-     * */
+	/**
+	 * TODO GUI bestand naar DocumentStore knop (gegeven de klasse) bestand
+	 * estimaten -> dit geeft feedback op een of andere manier en dan dit
+	 * bestand ook naar de documentstore sturen met een menselijk gecorrigeerde
+	 * klasse. Knoppen om de smoothing amountOfCondProbsToUse en minOccurrences
+	 * aan te passen is ook handig. Estimate knop heeft geen functionaliteit
+	 * */
 
 	private static void addComponentsToPane(final Container pane) {
 		pane.setLayout(new GridBagLayout());
@@ -71,7 +72,19 @@ public class GUI {
 		c.gridx = 0;
 		c.gridy = 2;
 		pane.add(estimateButton, c);
-		
+		estimateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object[] possibilities = { "a", "b", "c" };
+				String estimation = "a";
+				String s = (String) JOptionPane.showInputDialog(pane,
+						"The estimated class is " + estimation
+								+ ". What is the actual class?", "Estimation",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities,
+						possibilities[0]);
+			}
+		});
+
 		final JFileChooser chooser = new JFileChooser();
 		browseButton.addActionListener(new ActionListener() {
 			@Override
@@ -102,15 +115,16 @@ public class GUI {
 				}
 			}
 		});
-		
+
 	}
-	
+
 	public static void createAndShowGUI() {
 		final JFrame frame = new JFrame("Interactive Learner");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addComponentsToPane(frame.getContentPane());
 		frame.pack();
 		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
 	}
 
 	public static void main(String[] args) {
