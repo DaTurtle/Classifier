@@ -3,6 +3,7 @@ package module6;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -193,12 +195,15 @@ public class GUI {
 				if (file != null) {
 					if (estimation.getText().length() > 0) {
 						try {
+							int count = 0;
 							for (File f : file) {
 								docs.addDocument(
-									Utils.readFile(f.getAbsolutePath()),
-									estimation.getText());
+										Utils.readFile(f.getAbsolutePath()),
+										estimation.getText());
+								count++;
 							}
-							fileName.setText("All files successfully added!");
+							fileName.setText("All " + count
+									+ " files successfully added!");
 						} catch (IOException e1) {
 							fileName.setText("Error reading file(s)!");
 						}
@@ -265,24 +270,35 @@ public class GUI {
 					if (chooser.getSelectedFiles() != null) {
 						File[] file = chooser.getSelectedFiles();
 						if (file.length == 1) {
-						classifier.train();
+							classifier.train();
 							String estimated = "";
 							try {
 								estimated = classifier.estimate(Utils
 										.readFile(file[0].toString()));
+								String s = (String) JOptionPane
+										.showInputDialog(
+												pane,
+												"The estimated class is \""
+														+ estimated
+														+ "\". What is the actual class?",
+												"Estimation",
+												JOptionPane.PLAIN_MESSAGE,
+												null, null, estimated);
+								estimation.setText(s);
+								if (s != null) {
+									docs.addDocument(Utils.readFile(file[0]
+											.getAbsolutePath()), s);
+									chooser.setSelectedFile(null);
+									textContent.setText("");
+									estimation.setText("");
+									fileName.setText("File added!");
+								}
 							} catch (IOException e1) {
 								System.err
 										.println("Error: File can not be read!");
 								estimated = "ERROR";
 								e1.printStackTrace();
 							}
-							String s = (String) JOptionPane.showInputDialog(
-									pane, "The estimated class is \""
-											+ estimated
-											+ "\". What is the actual class?",
-									"Estimation", JOptionPane.PLAIN_MESSAGE,
-									null, null, estimated);
-							estimation.setText(s);
 						} else {
 							JOptionPane.showMessageDialog(pane,
 									"Please select only one file to estimate!",
