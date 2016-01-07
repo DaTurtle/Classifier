@@ -3,7 +3,6 @@ package module6;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -11,9 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,15 +20,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class GUI {
+	public static final boolean TEST = true;
 	public static NaiveBayes classifier = new NaiveBayes(1.0, 2, 0.30);
 	public static DocumentStore docs = classifier.getDocumentStore();
+	public static int mistakes_total = 0;
+	public static int mistakes_recent = 0;
+	public static int estimates_total = 0;
+	public static HashMap<Integer, Boolean> hm = new HashMap<Integer, Boolean>();
 
 	private static void addComponentsToPane(final Container pane) {
+		final JLabel accuracyLabel1;
+		final JLabel accuracyLabel2;
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setMultiSelectionEnabled(true);
 		pane.setLayout(new GridBagLayout());
@@ -166,7 +171,8 @@ public class GUI {
 		c.gridy = 6;
 		pane.add(slider3, c);
 
-		final JLabel sliderLabel1 = new JLabel("" + (((double)slider1.getValue())/10) + "%");
+		final JLabel sliderLabel1 = new JLabel(""
+				+ (((double) slider1.getValue()) / 10) + "%");
 		sliderLabel1.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
@@ -175,7 +181,8 @@ public class GUI {
 		c.gridy = 7;
 		pane.add(sliderLabel1, c);
 
-		final JLabel sliderLabel2 = new JLabel("" + (((double)slider2.getValue())/1000));
+		final JLabel sliderLabel2 = new JLabel(""
+				+ (((double) slider2.getValue()) / 1000));
 		sliderLabel2.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
@@ -193,12 +200,32 @@ public class GUI {
 		c.gridy = 7;
 		pane.add(sliderLabel3, c);
 
+		if (TEST) {
+			accuracyLabel1 = new JLabel("Accuracy (previous 20)");
+			accuracyLabel1.setHorizontalAlignment(JLabel.CENTER);
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridwidth = 1;
+			c.weightx = 0.5;
+			c.gridx = 0;
+			c.gridy = 8;
+			pane.add(accuracyLabel1, c);
+			accuracyLabel2 = new JLabel("Accuracy (Total)");
+			accuracyLabel2.setHorizontalAlignment(JLabel.CENTER);
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridwidth = 1;
+			c.weightx = 0.5;
+			c.gridx = 1;
+			c.gridy = 8;
+			pane.add(accuracyLabel2, c);
+		}
+
 		slider1.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				classifier.setAmountOfCondProbsToUse(((double) slider1
 						.getValue()) / 1000);
-				sliderLabel1.setText("" + ((double)(slider1.getValue())/10) + "%");
+				sliderLabel1.setText("" + ((double) (slider1.getValue()) / 10)
+						+ "%");
 			}
 		});
 
@@ -206,7 +233,8 @@ public class GUI {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				classifier.setSmoothing((double) (slider2.getValue()) / 1000);
-				sliderLabel2.setText("" + (((double)slider2.getValue())/1000));
+				sliderLabel2.setText(""
+						+ (((double) slider2.getValue()) / 1000));
 			}
 		});
 
@@ -322,6 +350,31 @@ public class GUI {
 									textContent.setText("");
 									estimation.setText("");
 									fileName.setText("File added!");
+									if (TEST) {
+										estimates_total++;
+										if (!s.equals(estimated)) {
+											mistakes_total++;
+											hm.put(estimates_total, true);
+										} else {
+											hm.put(estimates_total, false);
+										}
+										mistakes_recent = 0;
+										for (int i = 0; i < 20; i++) {
+											if (hm.get(estimates_total-i) == null ) {
+												break;
+											} else {
+												if (hm.get(estimates_total-i) == true) {
+													mistakes_recent++;
+												}
+											}
+										}
+										if (estimates_total >= 20) {
+											accuracyLabel1.setText("Recent accuracy: " + (20-mistakes_recent)*5 + "%");
+										} else {
+											accuracyLabel1.setText("Recent accuracy: " + (((double)estimates_total-mistakes_total) / ((double) estimates_total)) * 100 + "%");
+										}
+										accuracyLabel2.setText("Total accuracy: " + (((double)estimates_total-mistakes_total) / ((double) estimates_total)) * 100 + "%");
+									}
 								}
 							} catch (IOException e1) {
 								System.err
