@@ -103,7 +103,7 @@ public class GUI {
 		c.gridy = 4;
 		pane.add(addButton, c);
 
-		JLabel label1 = new JLabel("amount of condprobs");
+		JLabel label1 = new JLabel("Percentage of condprobs");
 		label1.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
@@ -121,10 +121,10 @@ public class GUI {
 		c.gridy = 5;
 		pane.add(label2, c);
 
-		JLabel label3 = new JLabel("Min Occurences");
+		JLabel label3 = new JLabel("Min. Occurences");
 		label3.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 1;
+		c.gridwidth = 2;
 		c.weightx = 0;
 		c.gridx = 2;
 		c.gridy = 5;
@@ -166,7 +166,7 @@ public class GUI {
 		c.gridy = 6;
 		pane.add(slider3, c);
 
-		final JLabel sliderLabel1 = new JLabel("" + (((double)slider1.getValue())/1000));
+		final JLabel sliderLabel1 = new JLabel("" + (((double)slider1.getValue())/10) + "%");
 		sliderLabel1.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
@@ -198,7 +198,7 @@ public class GUI {
 			public void stateChanged(ChangeEvent e) {
 				classifier.setAmountOfCondProbsToUse(((double) slider1
 						.getValue()) / 1000);
-				sliderLabel1.setText("" + ((double)(slider1.getValue())/1000));
+				sliderLabel1.setText("" + ((double)(slider1.getValue())/10) + "%");
 			}
 		});
 
