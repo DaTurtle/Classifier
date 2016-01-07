@@ -20,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class GUI {
 	public static NaiveBayes classifier = new NaiveBayes(1.0, 2, 0.30);
@@ -125,10 +127,11 @@ public class GUI {
 		c.gridy = 5;
 		pane.add(label3, c);
 
-		JSlider slider1 = new JSlider();
+		final JSlider slider1 = new JSlider();
 		slider1.setOrientation(JSlider.HORIZONTAL);
 		slider1.setMinimum(0);
-		slider1.setMaximum(100);
+		slider1.setMaximum(1000);
+		slider1.setValue(500);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
 		c.weightx = 0.5;
@@ -136,10 +139,11 @@ public class GUI {
 		c.gridy = 6;
 		pane.add(slider1, c);
 
-		JSlider slider2 = new JSlider();
+		final JSlider slider2 = new JSlider();
 		slider2.setOrientation(JSlider.HORIZONTAL);
-		slider2.setMinimum(0);
-		slider2.setMaximum(100);
+		slider2.setMinimum(1);
+		slider2.setMaximum(10000);
+		slider2.setValue(1000);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
 		c.weightx = 0.5;
@@ -147,10 +151,11 @@ public class GUI {
 		c.gridy = 6;
 		pane.add(slider2, c);
 		
-		JSlider slider3 = new JSlider();
+		final JSlider slider3 = new JSlider();
 		slider3.setOrientation(JSlider.HORIZONTAL);
 		slider3.setMinimum(0);
 		slider3.setMaximum(100);
+		slider3.setValue(3);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 2;
 		c.weightx = 0.5;
@@ -158,6 +163,27 @@ public class GUI {
 		c.gridy = 6;
 		pane.add(slider3, c);
 
+		slider1.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				classifier.setAmountOfCondProbsToUse(((double)slider1.getValue())/1000);
+			}
+		});
+		
+		slider2.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				classifier.setSmoothing((double)(slider2.getValue())/1000 );
+			}
+		});
+		
+		slider3.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				classifier.setMinOccurrences(slider3.getValue());
+			}
+		});
+		
 		addButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
