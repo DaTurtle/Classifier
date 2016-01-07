@@ -166,11 +166,39 @@ public class GUI {
 		c.gridy = 6;
 		pane.add(slider3, c);
 
+		final JLabel sliderLabel1 = new JLabel("" + (((double)slider1.getValue())/1000));
+		sliderLabel1.setHorizontalAlignment(JLabel.CENTER);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 7;
+		pane.add(sliderLabel1, c);
+
+		final JLabel sliderLabel2 = new JLabel("" + (((double)slider2.getValue())/1000));
+		sliderLabel2.setHorizontalAlignment(JLabel.CENTER);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 7;
+		pane.add(sliderLabel2, c);
+
+		final JLabel sliderLabel3 = new JLabel("" + slider3.getValue());
+		sliderLabel3.setHorizontalAlignment(JLabel.CENTER);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 2;
+		c.weightx = 0.5;
+		c.gridx = 2;
+		c.gridy = 7;
+		pane.add(sliderLabel3, c);
+
 		slider1.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				classifier.setAmountOfCondProbsToUse(((double) slider1
 						.getValue()) / 1000);
+				sliderLabel1.setText("" + ((double)(slider1.getValue())/1000));
 			}
 		});
 
@@ -178,6 +206,7 @@ public class GUI {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				classifier.setSmoothing((double) (slider2.getValue()) / 1000);
+				sliderLabel2.setText("" + (((double)slider2.getValue())/1000));
 			}
 		});
 
@@ -185,6 +214,7 @@ public class GUI {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				classifier.setMinOccurrences(slider3.getValue());
+				sliderLabel3.setText("" + slider3.getValue());
 			}
 		});
 
