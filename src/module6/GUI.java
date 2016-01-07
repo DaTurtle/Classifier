@@ -121,7 +121,7 @@ public class GUI {
 		c.gridy = 5;
 		pane.add(label2, c);
 
-		JLabel label3 = new JLabel("Min. Occurences");
+		JLabel label3 = new JLabel("Min. Occurrences");
 		label3.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 2;
