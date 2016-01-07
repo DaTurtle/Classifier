@@ -29,6 +29,7 @@ public class GUI {
 
 	private static void addComponentsToPane(final Container pane) {
 		final JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(true);
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -117,7 +118,7 @@ public class GUI {
 		c.gridx = 1;
 		c.gridy = 5;
 		pane.add(label2, c);
-		
+
 		JLabel label3 = new JLabel("Min Occurences");
 		label3.setHorizontalAlignment(JLabel.CENTER);
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -150,7 +151,7 @@ public class GUI {
 		c.gridx = 1;
 		c.gridy = 6;
 		pane.add(slider2, c);
-		
+
 		final JSlider slider3 = new JSlider();
 		slider3.setOrientation(JSlider.HORIZONTAL);
 		slider3.setMinimum(0);
@@ -166,37 +167,40 @@ public class GUI {
 		slider1.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				classifier.setAmountOfCondProbsToUse(((double)slider1.getValue())/1000);
+				classifier.setAmountOfCondProbsToUse(((double) slider1
+						.getValue()) / 1000);
 			}
 		});
-		
+
 		slider2.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				classifier.setSmoothing((double)(slider2.getValue())/1000 );
+				classifier.setSmoothing((double) (slider2.getValue()) / 1000);
 			}
 		});
-		
+
 		slider3.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				classifier.setMinOccurrences(slider3.getValue());
 			}
 		});
-		
+
 		addButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File file = chooser.getSelectedFile();
+				File[] file = chooser.getSelectedFiles();
 				if (file != null) {
 					if (estimation.getText().length() > 0) {
 						try {
-							docs.addDocument(
-									Utils.readFile(file.getAbsolutePath()),
+							for (File f : file) {
+								docs.addDocument(
+									Utils.readFile(f.getAbsolutePath()),
 									estimation.getText());
-							fileName.setText("File added!");
+							}
+							fileName.setText("All files successfully added!");
 						} catch (IOException e1) {
-							fileName.setText("An error occured while reading the file.");
+							fileName.setText("Error reading file(s)!");
 						}
 						chooser.setSelectedFile(null);
 						textContent.setText("");
@@ -209,8 +213,7 @@ public class GUI {
 					}
 				} else {
 					JOptionPane.showMessageDialog(pane,
-							"Please select a file!",
-							"Error: Missing file!",
+							"Please select a file!", "Error: Missing file!",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -220,27 +223,36 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int returnVal = chooser.showOpenDialog(pane);
-				File file = null;
+				File[] file = null;
 				BufferedReader in = null;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					file = chooser.getSelectedFile();
-					fileName.setText(file.getName());
-					textContent.setText("");
-					try {
-						in = new BufferedReader(new FileReader(file));
-					} catch (FileNotFoundException fnfe) {
-						// This shouldn't happen
+					file = chooser.getSelectedFiles();
+					if (file.length == 1) {
+						fileName.setText(file[0].getName());
+					} else {
+						fileName.setText("Multiple files");
 					}
-					String line;
-					try {
-						line = in.readLine();
-						while (line != null) {
-							textContent.append(line + "\n");
-							line = in.readLine();
+					textContent.setText("");
+					if (file.length == 1) {
+						try {
+							in = new BufferedReader(new FileReader(file[0]));
+						} catch (FileNotFoundException fnfe) {
+							// This shouldn't happen
 						}
-					} catch (IOException ioe) {
-						// TODO Auto-generated catch block
-						ioe.printStackTrace();
+						String line;
+						try {
+							line = in.readLine();
+							while (line != null) {
+								textContent.append(line + "\n");
+								line = in.readLine();
+							}
+						} catch (IOException ioe) {
+							// TODO Auto-generated catch block
+							ioe.printStackTrace();
+						}
+					} else {
+						textContent
+								.setText("Unable to preview files. Multiple files are selected.");
 					}
 				}
 			}
@@ -250,34 +262,42 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (docs.getVocab().length != 0) {
-					if (chooser.getSelectedFile() != null) {
+					if (chooser.getSelectedFiles() != null) {
+						File[] file = chooser.getSelectedFiles();
+						if (file.length == 1) {
 						classifier.train();
-						File file = chooser.getSelectedFile();
-						String estimated = "";
-						try {
-							estimated = classifier.estimate(Utils.readFile(file
-									.toString()));
-						} catch (IOException e1) {
-							System.err.println("Error: File can not be read!");
-							estimated = "ERROR";
-							e1.printStackTrace();
+							String estimated = "";
+							try {
+								estimated = classifier.estimate(Utils
+										.readFile(file[0].toString()));
+							} catch (IOException e1) {
+								System.err
+										.println("Error: File can not be read!");
+								estimated = "ERROR";
+								e1.printStackTrace();
+							}
+							String s = (String) JOptionPane.showInputDialog(
+									pane, "The estimated class is \""
+											+ estimated
+											+ "\". What is the actual class?",
+									"Estimation", JOptionPane.PLAIN_MESSAGE,
+									null, null, estimated);
+							estimation.setText(s);
+						} else {
+							JOptionPane.showMessageDialog(pane,
+									"Please select only one file to estimate!",
+									"Error: Too many files",
+									JOptionPane.ERROR_MESSAGE);
 						}
-						String s = (String) JOptionPane.showInputDialog(pane,
-								"The estimated class is \"" + estimated
-										+ "\". What is the actual class?",
-								"Estimation", JOptionPane.PLAIN_MESSAGE, null,
-								null, estimated);
-						estimation.setText(s);
 					} else {
 						JOptionPane.showMessageDialog(pane,
 								"Please select a file!", "Error: Missing file",
-								JOptionPane.ERROR_MESSAGE);	
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
 					JOptionPane.showMessageDialog(pane,
 							"First add a document to the Document Store!",
-							"Error: Empty DocStore",
-							JOptionPane.ERROR_MESSAGE);
+							"Error: Empty DocStore", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
